@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Vrinda 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background:radial-gradient(circle at top,#ff9a9e,#fad0c4);
+  overflow:hidden;
+}
+
+/* Screens */
+.screen{
+  position:absolute;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  transition:opacity 1s ease, transform 1s ease;
+}
+
+.hidden{
+  opacity:0;
+  pointer-events:none;
+  transform:scale(1.1);
+}
+
+.card{
+  background:white;
+  width:90%;
+  max-width:360px;
+  padding:26px;
+  border-radius:26px;
+  text-align:center;
+  box-shadow:0 25px 50px rgba(0,0,0,.3);
+  animation:pop 1s ease;
+}
+
+@keyframes pop{
+  from{transform:scale(.5);opacity:0;}
+  to{transform:scale(1);opacity:1;}
+}
+
+/* Buttons */
+button{
+  margin-top:25px;
+  padding:14px 34px;
+  border:none;
+  border-radius:30px;
+  background:linear-gradient(to right,#ff4081,#ff1744);
+  color:white;
+  font-size:18px;
+  cursor:pointer;
+  animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.1);}
+  100%{transform:scale(1);}
+}
+
+/* Typing cursor */
+.cursor::after{
+  content:"|";
+  animation:blink 1s infinite;
+}
+@keyframes blink{50%{opacity:0;}}
+
+/* Floating photo */
+.photo{
+  width:240px;
+  border-radius:22px;
+  margin:15px auto;
+  animation:float 3s ease-in-out infinite;
+  box-shadow:0 0 25px rgba(255,64,129,.8);
+}
+@keyframes float{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-12px);}
+}
+
+/* Hearts + confetti */
+.heart,.confetti{
+  position:fixed;
+  top:-10px;
+  pointer-events:none;
+}
+.heart{font-size:22px;animation:fall linear infinite;}
+.confetti{width:10px;height:10px;animation:fall linear infinite;}
+@keyframes fall{
+  to{transform:translateY(110vh) rotate(360deg);opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bgMusic" preload="auto" loop>
+  <source src="birthday.mp3" type="audio/mpeg">
+</audio>
+
+<!-- INTRO -->
+<div class="screen" id="intro">
+  <div class="card">
+    <h2>🎁 Tap to Start 🎁</h2>
+    <p>Your surprise awaits…</p>
+    <button onclick="start()">START</button>
+  </div>
+</div>
+
+<!-- SCREEN 1 -->
+<div class="screen hidden" id="s1">
+  <div class="card">
+    <h3 id="q1" class="cursor"></h3>
+    <button onclick="next1()">YES</button>
+  </div>
+</div>
+
+<!-- SCREEN 2 -->
+<div class="screen hidden" id="s2">
+  <div class="card">
+    <h3 id="q2" class="cursor"></h3>
+    <button onclick="playMusic(); next2()">YES</button>
+  </div>
+</div>
+
+<!-- FINAL -->
+<div class="screen hidden" id="s3">
+  <div class="card">
+    <h2>🎂 Happy Birthday Vrinda 🎉</h2>
+    <img src="vrinda.png" class="photo">
+    <p><b>Radhe Radhe 🌸</b></p>
+
+    <p id="msg" class="cursor"></p>
+    <p id="shayari" class="cursor" style="color:#7b1fa2;font-style:italic;"></p>
+  </div>
+</div>
+
+<script>
+const music=document.getElementById("bgMusic");
+
+function typeText(id,text,speed=45){
+  let i=0;
+  const el=document.getElementById(id);
+  el.innerHTML="";
+  const t=setInterval(()=>{
+    el.innerHTML+=text.charAt(i++);
+    if(i>=text.length) clearInterval(t);
+  },speed);
+}
+
+function typeLines(id,lines,speed=40,delay=700){
+  const el=document.getElementById(id);
+  el.innerHTML="";
+  let line=0;
+
+  function type(){
+    let c=0;
+    const txt=lines[line];
+    const i=setInterval(()=>{
+      el.innerHTML+=txt.charAt(c++);
+      if(c>=txt.length){
+        clearInterval(i);
+        el.innerHTML+="<br>";
+        line++;
+        if(line<lines.length) setTimeout(type,delay);
+      }
+    },speed);
+  }
+  type();
+}
+
+function playMusic(){
+  music.currentTime=0;
+  music.volume=1;
+  music.play();
+}
+
+function start(){
+  document.getElementById("intro").classList.add("hidden");
+  document.getElementById("s1").classList.remove("hidden");
+  typeText("q1","🎉 Is there someone’s birthday and New Year?");
+}
+
+function next1(){
+  document.getElementById("s1").classList.add("hidden");
+  document.getElementById("s2").classList.remove("hidden");
+  typeText("q2","😊 Is that you?");
+}
+
+function next2(){
+  document.getElementById("s2").classList.add("hidden");
+  document.getElementById("s3").classList.remove("hidden");
+
+  setTimeout(()=>{
+    typeLines("msg",[
+      "Happy Birthday, Vrinda!",
+      "Wishing you a very blessed day.",
+      "Your name has such a peaceful meaning,",
+      "and it was really nice chatting with you the other day.",
+      "May Lord Krishna fill your year with",
+      "happiness, clarity and peace ✨"
+    ],40,700);
+
+    setTimeout(()=>{
+      typeLines("shayari",[
+        "जन्मदिन की बहुत-बहुत शुभकामनाएँ!",
+        "राधे राधे।",
+        "",
+        "नाम 'वृंदा' है तुम्हारा,",
+        "पर अंदाज़ किसी प्राचीन श्लोक सा है,",
+        "बात एक बार हुई,",
+        "पर असर जैसे किसी जनम का योग सा है।"
+      ],45,900);
+    },5000);
+  },800);
+}
+
+/* Effects */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="💖";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=(3+Math.random()*3)+"s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+
+  const c=document.createElement("div");
+  c.className="confetti";
+  c.style.left=Math.random()*100+"vw";
+  c.style.background=`hsl(${Math.random()*360},100%,50%)`;
+  c.style.animationDuration=(3+Math.random()*3)+"s";
+  document.body.appendChild(c);
+  setTimeout(()=>c.remove(),6000);
+},250);
+</script>
+
+</body>
+</html>
